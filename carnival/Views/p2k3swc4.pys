@@ -1,0 +1,337 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="SemiColonWeb" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title</title>
+    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,400italic,600,700|Raleway:300,400,500,600,700|Crete+Round:400italic" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="~/css/bootstrap.css" type="text/css" />    
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-flash-1.5.1/b-html5-1.5.1/b-print-1.5.1/datatables.min.css" />
+    <link rel="stylesheet" href="~/css/style.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/dark.css" type="text/css" />
+    <link href="~/css/datepicker3.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/components/radio-checkbox.css" type="text/css" />
+    <!-- Star Rating Plugin -->
+    <link rel="stylesheet" href="~/css/components/bs-rating.css" type="text/css" />
+    <!-- / -->
+    <link rel="stylesheet" href="~/css/font-icons.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/animate.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/magnific-popup.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/responsive.css" type="text/css" />
+    </head>
+    <body class="stretched">
+        <div id="loader" class="se-pre-con" style="display:none;"></div>
+        <div id="wrapper" class="container-fluid">
+
+            @*<div class="col-md-offset-1 col-md-7 ">
+                <p class="pageTitle">DLR Reports</p>
+            </div>*@
+            @*<div class="col-md-3" style="margin-top:10px;">
+
+                <label id="lblusername" class="label-info">Welcome @Session["username"] </label>
+                @Html.ActionLink("Logout", "logout", "Account", null, new { @class = "icon-1x icon-circle-arrow-right" })
+            </div>*@
+
+
+            <nav class="navbar navbar-inverse" style="margin-top:2px;">
+                <div class="container">
+                    @*<div class="navbar-header">
+                    <a class="navbar-brand" href="#">Carnival</a>
+                </div>*@
+                    <ul class="nav navbar-nav">
+                        <li><a href="@Url.Action("Carnival", "Report")" style="color: aliceblue; font-size: 15px; font-weight:bold;">DRL Report</a></li> 
+                        <li><a href="@Url.Action("CarnivalSummary", "Report")" style="color: aliceblue; font-size: 15px; font-weight: bold; ">Summary Report</a></li>
+                        @*<li><a href="#">Page 2</a></li>*@
+                        @*<li><a href="#">Page 3</a></li>*@
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#"><label id="lblusername" style="color:aliceblue;">Welcome @Session["username"]</label></a></li>
+                        <li><a href="@Url.Action("logout", "Account")"><span class="icon-1x icon-circle-arrow-right"></span> Logout</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+
+
+
+
+
+
+            <!-- Header
+        ============================================= -->
+            @RenderBody()
+        </div>
+
+
+        <!-- External JavaScripts
+        ============================================= -->
+        <script type="text/javascript" src="~/js/jquery.js"></script>
+    <script type="text/javascript" src="~/js/plugins.js"></script>
+
+    <script src="~/js/bootstrap-datepicker.js"></script>
+
+        @*<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.1.2/js/buttons.html5.min.js"></script>*@
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-flash-1.5.1/b-html5-1.5.1/b-print-1.5.1/datatables.min.js"></script>
+            <!-- Footer Scripts
+            ============================================= -->
+            <script type="text/javascript" src="~/js/functions.js"></script>
+
+    <script type="text/javascript" class="init">
+
+        $(document).ready(function () {
+
+            $('#idtable_d').DataTable({
+
+                //buttons: [
+                //    'csvHtml5'
+                //]
+            });
+            var d = new Date();
+            var e = formatDate(d);
+
+            $('#idtable').DataTable({
+                "dom": 'lBfrtip',
+                buttons: [
+                          { extend: 'csvHtml5', title: $("#username option:selected").text() + '_' +e, text: 'Export to CSV' }
+                ]
+            });
+
+
+
+        });
+        function isNumberKey(evt) {
+            debugger;
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57 || charCode == 22)) {
+
+                return false;
+            }
+            return true;
+        }
+
+
+        function formatDate(date) {
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            var strTime = hours + ':' + minutes ;
+            return date.getMonth() + 1 + "" + date.getDate() + "" + date.getFullYear() + "" + strTime;
+        }
+        $(function () {
+            $('#Search-form-Fromdate').datepicker({
+                format: 'yyyy-mm-dd',
+                endDate: '1d',
+                todayHighlight: true
+            }).on('changeDate', function (e) {
+                e.preventDefault();
+                $('.datepicker').hide();
+                var fromdate = $(this).val();
+                $("#Search-form-Todate").datepicker('setStartDate', fromdate);
+                if ($.trim($("#Search-form-Todate").val()) != '') {
+                    var todate = $("#Search-form-Todate").val();
+                    var dt1 = new Date(fromdate);
+                    var dt2 = new Date(todate);
+                    var timediff = dt2.getTime() - dt1.getTime();
+                    var datediff = Math.ceil(timediff / (1000 * 3600 * 24));
+
+                    if (datediff < 0) {
+                        $("#Search-form-Todate").val("");
+                    }
+                }
+            });
+
+        });
+
+        $(function () {
+            $('#Search-form-Todate').datepicker({
+                format: 'yyyy-mm-dd',
+                endDate: '1d',
+                startDate: '1d'
+            }).on('changeDate', function (e) {
+                e.preventDefault();
+                $('.datepicker').hide();
+            });
+        });
+
+
+        $(function () {
+            $('#SearchSummary-form-Fromdate').datepicker({
+                format: 'yyyy-mm-dd',
+                endDate: '1d',
+                todayHighlight: true
+            }).on('changeDate', function (e) {
+                e.preventDefault();
+                $('.datepicker').hide();
+                var fromdate = $(this).val();
+                $("#SearchSummary-form-Todate").datepicker('setStartDate', fromdate);
+                if ($.trim($("#SearchSummary-form-Fromdate").val()) != '') {
+                    var todate = $("#SearchSummary-form-Todate").val();
+                    var dt1 = new Date(fromdate);
+                    var dt2 = new Date(todate);
+                    var timediff = dt2.getTime() - dt1.getTime();
+                    var datediff = Math.ceil(timediff / (1000 * 3600 * 24));
+
+                    if (datediff < 0) {
+                        $("#SearchSummary-form-Todate").val("");
+                    }
+                }
+            });
+
+        });
+
+        $(function () {
+            $('#SearchSummary-form-Todate').datepicker({
+                format: 'yyyy-mm-dd',
+                endDate: '1d',
+                startDate: '1d'
+            }).on('changeDate', function (e) {
+                e.preventDefault();
+                $('.datepicker').hide();
+            });
+        });
+
+        function clearcontent() {
+            document.getElementById('Search-form-Fromdate').value = "";
+        }
+        function clearcontent0() {
+            document.getElementById('Search-form-Todate').value = "";
+        }
+
+        function clearcontentsummary() {
+            document.getElementById('SearchSummary-form-Fromdate').value = "";
+        }
+        function clearcontent0summary() {
+            document.getElementById('SearchSummary-form-Todate').value = "";
+        }
+
+        function validate() {
+            if (document.getElementById('Search-form-mobile').value == "" && document.getElementById('Search-form-Fromdate').value == "" && document.getElementById('Search-form-Todate').value == "") {
+                alert('Please Enter the Mobile Number or From and Todate.');
+                return false;
+            }
+            else if (document.getElementById('Search-form-Fromdate').value != "Select Date" && document.getElementById('Search-form-Fromdate').value != "" && (document.getElementById('Search-form-Todate').value == "Select Date" || document.getElementById('Search-form-Todate').value == "")) {
+                alert('Please select To Date.');
+                return false;
+            }
+            else if (document.getElementById('Search-form-Todate').value != "Select Date" && document.getElementById('Search-form-Todate').value != "" && (document.getElementById('Search-form-Fromdate').value == "Select Date" || document.getElementById('Search-form-Fromdate').value == "")) {
+                alert('Please select the From  Date.');
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+
+
+        function validatesummary() {
+            if (document.getElementById('SearchSummary-form-Fromdate').value == "" && document.getElementById('SearchSummary-form-Todate').value == "") {
+                alert('Please Enter the Mobile Number or From and Todate.');
+                return false;
+            }
+            else if (document.getElementById('SearchSummary-form-Fromdate').value != "Select Date" && document.getElementById('Search-form-Fromdate').value != null && (document.getElementById('SearchSummary-form-Todate').value == "Select Date" || document.getElementById('SearchSummary-form-Todate').value == "")) {
+                alert('Please select To Date.');
+                return false;
+            }
+            else if (document.getElementById('SearchSummary-form-Todate').value != "Select Date" && document.getElementById('SearchSummary-form-Todate').value != null || (document.getElementById('SearchSummary-form-Fromdate').value == "Select Date" || document.getElementById('SearchSummary-form-Fromdate').value == "")) {
+                alert('Please select the From  Date.');
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        //function exportreport() {
+        //    alert("hi");
+        //    var fromdate = document.getElementById('Search-form-Fromdate').value.trim();
+        //    var todate = document.getElementById('Search-form-Todate').value.trim();
+        //    var username = document.getElementById('username').value.trim();
+        //    $("#loader").show();
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "export_to_csv",
+        //        data: '{fromdate: "' + fromdate + '",todate: "' + todate + '",username: "' + username + '" }',
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        success: function (response) {
+        //            //$(".se-pre-con").css("display", "none");
+        //            $("#loader").hide();
+        //            alert(response);
+        //            alert(response.d);
+        //        },
+        //        failure: function (response){
+        //            alert(response.d);
+        //        }
+        //    });
+        //}
+
+
+        $('#search-form-download').click(function (e) {
+            // prevent the default event behaviour
+            e.preventDefault();
+            if (document.getElementById('Search-form-mobile').value == "" && document.getElementById('Search-form-Fromdate').value == "" && document.getElementById('Search-form-Todate').value == "") {
+                alert('Please Enter the Mobile Number or From and Todate.');
+                return false;
+            }
+            else if (document.getElementById('Search-form-Fromdate').value != "Select Date" && document.getElementById('Search-form-Fromdate').value != "" && (document.getElementById('Search-form-Todate').value == "Select Date" || document.getElementById('Search-form-Todate').value == "")) {
+                alert('Please select To Date.');
+                return false;
+            }
+            else if (document.getElementById('Search-form-Todate').value != "Select Date" && document.getElementById('Search-form-Todate').value != "" && (document.getElementById('Search-form-Fromdate').value == "Select Date" || document.getElementById('Search-form-Fromdate').value == "")) {
+                alert('Please select the From  Date.');
+                return false;
+            } else {
+                var fromdate = document.getElementById('Search-form-Fromdate').value.trim();
+                var todate = document.getElementById('Search-form-Todate').value.trim();
+                var username = document.getElementById('username').value.trim();
+                var mobileno = document.getElementById('Search-form-mobile').value.trim();
+                alert(username);
+                if (mobileno == "") {
+                    mobileno = "black";
+                }
+                $("#loader").show();
+                $.ajax({
+                    url: "export_to_csv",
+                    type: "POST",
+                    data: '{fromdate: "' + fromdate + '",todate: "' + todate + '",username: "' + username + '",mobileno: "' + mobileno + '" }',
+
+                    traditional: true,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        if (data == "") {
+                            $('#download').html("No Data Found !!");
+                            $('#success').hide();
+                            $("#loader").hide();
+                        }
+                        else if(data=="timeout"){
+                            $("#loader").hide();
+                            window.location.href = "Account/logincarnival";
+                            $("error").html("Session Timeout ! Please Login Again.");
+                        }
+                        else {
+                            $('#download').html("Download will start automatically. If it does not start,  <a id=\"dlrdownloadlink\" href=\"" + data + "\">click here</a> to download Reports.");
+                            $('#success').hide();
+                            $("#loader").hide();
+                        }
+
+
+                    },
+                    error: function () {
+                        $('#download').html("Error In Export Report !Please Try again later");
+                        $('#success').hide();
+                        $("#loader").hide();
+                    }
+                });
+            }
+        });
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,722 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="SemiColonWeb" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title</title>
+    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,400italic,600,700|Raleway:300,400,500,600,700|Crete+Round:400italic" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="~/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-flash-1.5.1/b-html5-1.5.1/b-print-1.5.1/datatables.min.css" />
+    <link rel="stylesheet" href="~/css/style.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/dark.css" type="text/css" />
+    <link href="~/css/datepicker3.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/components/radio-checkbox.css" type="text/css" />
+    <!-- Star Rating Plugin -->
+    <link rel="stylesheet" href="~/css/components/bs-rating.css" type="text/css" />
+    <!-- / -->
+    <link rel="stylesheet" href="~/css/font-icons.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/animate.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/magnific-popup.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/responsive.css" type="text/css" />
+    <style>
+        .dt-buttons .btn-group {
+            width: 11%;
+            float: right;
+        }
+
+        #idtable_d_filter {
+            width: 20%;
+            float: right;
+        }
+
+        #idtable_d_length {
+            width: 66%;
+            float: left;
+        }
+
+
+        td {
+            overflow: hidden;
+            white-space: nowrap;
+            max-width: 100px;
+        }
+
+            td:hover {
+                overflow: auto;
+                white-space: normal;
+                height: auto; /* just added this line */
+            }
+    </style>
+</head>
+<body class="stretched">
+    <div id="loader" class="se-pre-con" style="display:none;"></div>
+    <div id="wrapper" class="container-fluid">
+
+        @*<div class="col-md-offset-1 col-md-7 ">
+                <p class="pageTitle">DLR Reports</p>
+            </div>*@
+        @*<div class="col-md-3" style="margin-top:10px;">
+
+                <label id="lblusername" class="label-info">Welcome @Session["username"] </label>
+                @Html.ActionLink("Logout", "logout", "Account", null, new { @class = "icon-1x icon-circle-arrow-right" })
+            </div>*@
+
+
+        <nav class="navbar navbar-inverse" style="margin-top:2px;">
+            <div class="container">
+                @*<div class="navbar-header">
+                        <a class="navbar-brand" href="#">Carnival</a>
+                    </div>*@
+                <ul class="nav navbar-nav">
+                    <li><a href="@Url.Action("pullSmsReport", "Report")" style="color: aliceblue; font-size: 15px; font-weight:bold;">Inbox</a></li>
+                    <li><a href="@Url.Action("changepwd", "Report")" style="color: aliceblue; font-size: 15px; font-weight: bold; ">Change Password</a></li>
+                    @*<li><a href="#">Page 2</a></li>*@
+                    @*<li><a href="#">Page 3</a></li>*@
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#"><label id="lblusername" style="color:aliceblue;">Welcome @Session["username"]</label></a></li>
+                    <li><a href="@Url.Action("logout", "Account")"><span class="icon-1x icon-circle-arrow-right"></span> Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+        <!-- Header
+        ============================================= -->
+        @RenderBody()
+    </div>
+                                    
+
+    <!-- External JavaScripts
+    ============================================= -->
+    <script type="text/javascript" src="~/js/jquery.js"></script>
+    <script type="text/javascript" src="~/js/plugins.js"></script>
+
+    @*<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/locale/af.js"></script>*@
+    <script src="~/js/bootstrap-datepicker.js"></script>
+    <script src="~/js/moment.js"></script>
+    @*<script src="~/js/" ></script>*@
+    @*<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.1.2/js/buttons.html5.min.js"></script>*@
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-flash-1.5.1/b-html5-1.5.1/b-print-1.5.1/datatables.min.js"></script>
+    <!-- Footer Scripts
+    ============================================= -->
+    <script type="text/javascript" src="~/js/functions.js"></script>
+
+    <script type="text/javascript" class="init">
+
+        //$(document).ready(function () {
+            
+        //});
+
+        $("#Search-datewise").click(function () {
+
+            var source = $("#source option:selected").text();
+            var pkey = $("#pkey option:selected").text();
+            var skey = $("#skey option:selected").text();
+            if (source == "" || source == "Select Source") {
+                alert("Please Select Source");
+                return false;
+            } else if (pkey == "" || pkey == "Select Pkey") {
+                alert("Please Select P Key");
+                return false;
+            } else if (skey == "") {
+                alert("Please Select S Key");
+                return false;
+            } else {
+                $("#search-datewise-model").modal('show');
+            }
+
+
+        });
+
+        $("#hide-model").click(function () {
+            $("#search-datewise-model").modal('hide');
+        });
+
+        $("input[name='rdn-getreport']").change(function () {
+            var radioValue = $("input[name='rdn-getreport']:checked").val();
+            if (radioValue == "rpt-all") {
+                $("#SearchSummary-form-Todate").attr("disabled", "disabled");
+                $("#SearchSummary-form-Fromdate").attr("disabled", "disabled");
+                $('#SearchSummary-form-Fromdate').val("");
+                $('#SearchSummary-form-Todate').val("");
+            } else if (radioValue == "rpt-datewise") {
+                $("#SearchSummary-form-Todate").removeAttr("disabled");
+                $("#SearchSummary-form-Fromdate").removeAttr("disabled");
+            }
+        });
+
+        function validatedatetime() {
+            //var objjson = {};
+            //objjson.source = $('[id$=source] option:selected').val();
+            //objjson.pkey = $('[id$=pkey] option:selected').val();
+            //objjson.skey = $('[id$=skey] option:selected').val();
+            //$("#hfjson").val(JSON.stringify(objjson));
+        }
+
+        $.ajaxSetup({
+            statusCode: {
+                403: function () {
+                    window.location.reload();
+                }
+            }
+        });
+
+
+
+        $("#search-datewise-go").click(function (e) {
+            e.preventDefault();
+            var datejson = {};
+            datejson.source = $('[id$=source] option:selected').val();
+            datejson.pkey = $('[id$=pkey] option:selected').val();
+            datejson.skey = $('[id$=skey] option:selected').val();
+            datejson.fromdate = $("#SearchSummary-form-Fromdate").val();
+            datejson.todate = $("#SearchSummary-form-Todate").val();
+            datejson.reporttype = $("input[name='rdn-getreport']:checked").val();
+            $("#loader").show();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ajaxgetdatadatewise")',
+                data: '{objdatewise: ' + JSON.stringify(datejson) + '}',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $('#idtable_d').DataTable().clear().destroy();
+                    $("#success").html('');
+                    $('#error').html('');
+                    $("#tbl_data").css('display', 'block');
+                    if (data.status == 200) {
+                        $('#success').html(data.message);
+                        var items = '';
+                        $.each(data.reportpullsms, function (i, item) {
+                            var rows = "<tr>"
+                            + "<td>" + (item.MsgID == null ? '' : item.MsgID) + "</td>"
+                            + "<td>" + (item.SKey == null ? '' : item.SKey) + "</td>"
+                            + "<td>" + (item.MobileNo == null ? '' : item.MobileNo) + "</td>"
+                            + "<td>" + (item.Message == null ? '' : item.Message) + "</td>"
+                            + "<td>" + (item.RecDateTime == null ? '' : moment(item.RecDateTime).format("YYYY-MM-DD HH:mm:ss")) + "</td>"
+                            + "<td>" + (item.Circle == null ? '' : item.Circle) + "</td>"
+                            + "<td>" + (item.Source == null ? '' : item.Source) + "</td>"
+                            + "</tr>";
+                            $('#idtable_d tbody').append(rows);
+                        });
+                        var d = new Date();
+                        var e = formatDate(d);
+                        var username = '@Session["username"].ToString()';
+
+                        $('#idtable_d').DataTable({
+                            "dom": 'lBfrtip',
+                            buttons: [
+                                      { extend: 'csvHtml5', title: username + '_' + e, text: 'Export to CSV' }
+                            ],
+                            "order": [[1, "asc"]]
+                        });
+                    } else if (data.status == 400) {
+                        $("#tbl_data").css('display', 'none');
+                        $('#error').html(data.message);
+                    }
+
+                    
+                    $("#search-datewise-model").modal('hide');
+                    $("#loader").hide();
+                },
+                error: function () {
+                    $('#error').html('roblem While Loading!!');
+                    $("#search-datewise-model").modal('hide');
+                    $("#loader").hide();
+                    return false;
+                }
+            });
+
+        });
+
+        $("#form-save").click(function (e) {
+            e.preventDefault();
+            $('#success').html('');
+            $('#error').html('');
+            if ($("#old-password").val() == "") {
+                alert("Please Enter Old Password!!");
+                return false;
+            } else if ($("#new-password").val() == "") {
+                alert("Please Enter New  Password!!");
+                return false;
+            } else if ($("#confirm-password").val() == "") {
+                alert("Please Enter Confirm Password!!");
+                return false;
+            } else {
+                var cngpwd = {};
+                cngpwd.oldpwd = $("#old-password").val();
+                cngpwd.newpwd = $("#new-password").val();
+                cngpwd.confirtpwd = $("#confirm-password").val();
+                if ($("#new-password").val() == $("#confirm-password").val()) {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("changepwd")',
+                        data: '{objcngpwd: ' + JSON.stringify(cngpwd) + '}',
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            if (data.status == 200) {
+                                $('#success').html(data.message);
+                                $('#old-password').val("");
+                                $('#new-password').val("");
+                                $('#confirm-password').val("");
+                            }
+                            else if (data.status == 400) {
+
+                                $('#error').html(data.message);
+
+                            } else if (data.status == 401) {
+                                $('#error').html(data.message);
+                                $('#old-password').val("");
+                                $('#new-password').val("");
+                                $('#confirm-password').val("");
+                            }
+                        },
+                        error: function () {
+                            $('#error').html('Problem While Loading!!');
+                        }
+                    });
+                }
+                else {
+                    $('#error').html('New Password does not match with Confirm Password !!');
+                    return false;
+                }
+            }
+        });
+
+        $("#Seach-form-submit").click(function (e) {
+            e.preventDefault();
+            $('#success').html('');
+            $('#error').html('');
+            var source = $("#source option:selected").text();
+            var pkey = $("#pkey option:selected").text();
+            var skey = $("#skey option:selected").text();
+            if (source == "" || source == "Select Source") {
+                alert("Please Select Source");
+                return false;
+            } else if (pkey == "" || pkey == "Select Pkey") {
+                alert("Please Select P Key");
+                return false;
+            } else if (skey == "") {
+                alert("Please Select S Key");
+                return false;
+            }
+            else
+            {
+                var objrptpull = {};
+                objrptpull.source = $("#source").val();
+                objrptpull.pkey = $("#pkey").val();
+                objrptpull.skey = $("#skey").val();
+
+
+                $("#loader").show();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("pullSmsReport1")',
+                    data: '{objrptpull: ' + JSON.stringify(objrptpull) + '}',
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {                       
+                        $("#tbl_data").css('display', 'block');
+                        $('#idtable_d').DataTable().clear().destroy();
+                        $("#success").html('');
+                        $('#error').html('');
+                        if (data.status == 200) {
+                            //$('#success').html(data.message);
+                            var items = '';
+                            $.each(data.reportpullsms, function (i, item) {
+                                var rows = "<tr>"
+                                + "<td>" + (item.MsgID == null ? '' : item.MsgID) + "</td>"
+                                + "<td>" + (item.SKey == null ? '' : item.SKey) + "</td>"
+                                + "<td>" + (item.MobileNo == null ? '' : item.MobileNo) + "</td>"
+                                + "<td>" + (item.Message == null ? '' : item.Message) + "</td>"
+                                + "<td>" + (item.RecDateTime == null ? '' : moment(item.RecDateTime).format("YYYY-MM-DD HH:mm:ss")) + "</td>"
+                                + "<td>" + (item.Circle == null ? '' : item.Circle) + "</td>"
+                                + "<td>" + (item.Source == null ? '' : item.Source) + "</td>"
+                                + "</tr>";
+                                $('#idtable_d tbody').append(rows);
+                            });
+                            var d = new Date();
+                            var e = formatDate(d);
+                            var username = '@Session["username"].ToString()';
+
+                            $('#idtable_d').DataTable({
+                                "dom": 'lBfrtip',
+                                buttons: [
+                                          { extend: 'csvHtml5', title: username + '_' + e, text: 'Export to CSV' }
+                                ],
+                                "order": [[1, "asc"]]
+                            });
+                        } else if (data.status == 400) {
+                            $("#tbl_data").css('display', 'none');
+                            $('#error').html(data.message);
+                        }
+                        $("#loader").hide();
+                    },
+                    error: function () {
+                        $("#tbl_data").css('display', 'none');
+                        $('#error').html('Problem While Loading!!');
+                        return false;
+                    }
+                });
+
+            }
+
+    
+        });
+
+        $("#form-clear").click(function () {
+            //e.preventDefault();
+
+            $('#old-password').val("");
+            $('#new-password').val("");
+            $('#confirm-password').val("");
+            $('#error').html('');
+            $('#success').html('');
+            //$('#confirm-password').html('');
+            return false;
+        });
+
+        $(document).ready(function () {
+            //$('#idtable_d').DataTable({
+
+            //    //buttons: [
+            //    //    'csvHtml5'
+            //    //]
+            //});
+            //var d = new Date();
+            //var e = formatDate(d);
+
+            //$('#idtable').DataTable({
+            //    "dom": 'lBfrtip',
+            //    buttons: [
+            //              { extend: 'csvHtml5', title: $("#username option:selected").text() + '_' +e, text: 'Export to CSV' }
+            //    ],
+            //    "order": [[1, "asc"]]
+            //});
+
+
+
+            @*var d = new Date();
+            var e = formatDate(d);
+            var username='@Session["username"].ToString()';
+
+            $('#idtable_d').DataTable({
+                "dom": 'lBfrtip',
+                buttons: [
+                          { extend: 'csvHtml5', title: username + '_' + e, text: 'Export to CSV' }
+                ],
+                "order": [[1, "asc"]]
+            });*@
+        });
+
+
+
+
+        $(document).ready(function () {
+
+            //Dropdownlist Selectedchange event
+            $("#source").change(function () {
+                $("#pkey").empty();
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("getpkey")', // we are calling json method
+                    dataType: 'json',
+                    data: { source: $("#source").val() },
+                    // here we are get value of selected country and passing same value  as inputto json method GetStates.
+
+                    success: function (itempkey) {
+                        // states contains the JSON formatted list
+                        // of states passed from the controller
+                        $.each(itempkey, function (i, pkey) {
+                            $("#pkey").append('<option value="' + pkey.Value + '">' +
+                                 pkey.Text + '</option>');
+                            // here we are adding option for States
+                        });
+                    },
+                    error: function (ex) {
+                        //alert('Failed to retrieve pkey.');
+                    }
+                });
+                return false;
+            })
+
+            $("#pkey").change(function () {
+                $("#skey").empty();
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("getskey")',
+                    dataType: 'json',
+                    data: { pkey: $("#pkey").val() },
+                    success: function (itemskey) {
+                        // states contains the JSON formatted list
+                        // of states passed from the controller
+                        $.each(itemskey, function (i, skey) {
+                            $("#skey").append('<option value="'
+                                        + skey.Value + '">'
+                                        + skey.Text + '</option>');
+                        });
+                    },
+                    error: function (ex) {
+                        //alert('Failed to retrieve skey.');
+                    }
+                });
+                return false;
+            })
+            // });
+
+        });
+
+        function isNumberKey(evt) {
+            debugger;
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57 || charCode == 22)) {
+
+                return false;
+            }
+            return true;
+        }
+
+
+        function formatDate(date) {
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            var strTime = hours + ':' + minutes;
+            return date.getMonth() + 1 + "" + date.getDate() + "" + date.getFullYear() + "" + strTime;
+        }
+        $(function () {
+            $('#Search-form-Fromdate').datepicker({
+                format: 'yyyy-mm-dd',
+                endDate: '1d',
+                todayHighlight: true
+            }).on('changeDate', function (e) {
+                e.preventDefault();
+                $('.datepicker').hide();
+                var fromdate = $(this).val();
+                $("#Search-form-Todate").datepicker('setStartDate', fromdate);
+                if ($.trim($("#Search-form-Todate").val()) != '') {
+                    var todate = $("#Search-form-Todate").val();
+                    var dt1 = new Date(fromdate);
+                    var dt2 = new Date(todate);
+                    var timediff = dt2.getTime() - dt1.getTime();
+                    var datediff = Math.ceil(timediff / (1000 * 3600 * 24));
+
+                    if (datediff < 0) {
+                        $("#Search-form-Todate").val("");
+                    }
+                }
+            });
+
+        });
+
+        $(function () {
+            $('#Search-form-Todate').datepicker({
+                format: 'yyyy-mm-dd',
+                endDate: '1d',
+                startDate: '1d'
+            }).on('changeDate', function (e) {
+                e.preventDefault();
+                $('.datepicker').hide();
+            });
+        });
+
+
+        $(function () {
+            $('#SearchSummary-form-Fromdate').datepicker({
+                format: 'yyyy-mm-dd',
+                endDate: '1d',
+                todayHighlight: true
+            }).on('changeDate', function (e) {
+                e.preventDefault();
+                $('.datepicker').hide();
+                var fromdate = $(this).val();
+                $("#SearchSummary-form-Todate").datepicker('setStartDate', fromdate);
+                if ($.trim($("#SearchSummary-form-Fromdate").val()) != '') {
+                    var todate = $("#SearchSummary-form-Todate").val();
+                    var dt1 = new Date(fromdate);
+                    var dt2 = new Date(todate);
+                    var timediff = dt2.getTime() - dt1.getTime();
+                    var datediff = Math.ceil(timediff / (1000 * 3600 * 24));
+
+                    if (datediff < 0) {
+                        $("#SearchSummary-form-Todate").val("");
+                    }
+                }
+            });
+
+        });
+
+        $(function () {
+            $('#SearchSummary-form-Todate').datepicker({
+                format: 'yyyy-mm-dd',
+                endDate: '1d',
+                startDate: '1d'
+            }).on('changeDate', function (e) {
+                e.preventDefault();
+                $('.datepicker').hide();
+            });
+        });
+
+        function clearcontent() {
+            document.getElementById('Search-form-Fromdate').value = "";
+        }
+        function clearcontent0() {
+            document.getElementById('Search-form-Todate').value = "";
+        }
+
+        function clearcontentsummary() {
+            document.getElementById('SearchSummary-form-Fromdate').value = "";
+        }
+        function clearcontent0summary() {
+            document.getElementById('SearchSummary-form-Todate').value = "";
+        }
+
+        function validate() {
+
+            var source = $("#source option:selected").text();
+            var pkey = $("#pkey option:selected").text();
+            var skey = $("#skey option:selected").text();
+            if (source == "" || source == "Select Source") {
+                alert("Please Select Source");
+                return false;
+            } else if (pkey == "" || pkey == "Select Pkey") {
+                alert("Please Select P Key");
+                return false;
+            } else if (skey == "") {
+                alert("Please Select S Key");
+                return false;
+            }
+            //if (document.getElementById('Search-form-mobile').value == "" && document.getElementById('Search-form-Fromdate').value == "" && document.getElementById('Search-form-Todate').value == "") {
+            //    alert('Please Enter the Mobile Number or From and Todate.');
+            //    return false;
+            //}
+            //else if (document.getElementById('Search-form-Fromdate').value != "Select Date" && document.getElementById('Search-form-Fromdate').value != "" && (document.getElementById('Search-form-Todate').value == "Select Date" || document.getElementById('Search-form-Todate').value == "")) {
+            //    alert('Please select To Date.');
+            //    return false;
+            //}
+            //else if (document.getElementById('Search-form-Todate').value != "Select Date" && document.getElementById('Search-form-Todate').value != "" && (document.getElementById('Search-form-Fromdate').value == "Select Date" || document.getElementById('Search-form-Fromdate').value == "")) {
+            //    alert('Please select the From  Date.');
+            //    return false;
+            //}
+            //else {
+            //    return true;
+            //}
+
+
+        }
+
+        function validatecgnpwd() {
+            return true;
+        }
+
+        function validatesummary() {
+            if (document.getElementById('SearchSummary-form-Fromdate').value == "" && document.getElementById('SearchSummary-form-Todate').value == "") {
+                alert('Please Enter the Mobile Number or From and Todate.');
+                return false;
+            }
+            else if (document.getElementById('SearchSummary-form-Fromdate').value != "Select Date" && document.getElementById('SearchSummary-form-Fromdate').value != "" && (document.getElementById('SearchSummary-form-Todate').value == "Select Date" || document.getElementById('SearchSummary-form-Todate').value == "")) {
+                alert('Please select To Date.');
+                return false;
+            }
+            else if (document.getElementById('SearchSummary-form-Todate').value != "Select Date" && document.getElementById('SearchSummary-form-Todate').value != "" && (document.getElementById('SearchSummary-form-Fromdate').value == "Select Date" || document.getElementById('SearchSummary-form-Fromdate').value == "")) {
+                alert('Please select the From  Date.');
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        //function exportreport() {
+        //    alert("hi");
+        //    var fromdate = document.getElementById('Search-form-Fromdate').value.trim();
+        //    var todate = document.getElementById('Search-form-Todate').value.trim();
+        //    var username = document.getElementById('username').value.trim();
+        //    $("#loader").show();
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "export_to_csv",
+        //        data: '{fromdate: "' + fromdate + '",todate: "' + todate + '",username: "' + username + '" }',
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        success: function (response) {
+        //            //$(".se-pre-con").css("display", "none");
+        //            $("#loader").hide();
+        //            alert(response);
+        //            alert(response.d);
+        //        },
+        //        failure: function (response){
+        //            alert(response.d);
+        //        }
+        //    });
+        //}
+
+
+        $('#search-form-download').click(function (e) {
+            // prevent the default event behaviour
+            e.preventDefault();
+            if (document.getElementById('Search-form-mobile').value == "" && document.getElementById('Search-form-Fromdate').value == "" && document.getElementById('Search-form-Todate').value == "") {
+                alert('Please Enter the Mobile Number or From and Todate.');
+                return false;
+            }
+            else if (document.getElementById('Search-form-Fromdate').value != "Select Date" && document.getElementById('Search-form-Fromdate').value != "" && (document.getElementById('Search-form-Todate').value == "Select Date" || document.getElementById('Search-form-Todate').value == "")) {
+                alert('Please select To Date.');
+                return false;
+            }
+            else if (document.getElementById('Search-form-Todate').value != "Select Date" && document.getElementById('Search-form-Todate').value != "" && (document.getElementById('Search-form-Fromdate').value == "Select Date" || document.getElementById('Search-form-Fromdate').value == "")) {
+                alert('Please select the From  Date.');
+                return false;
+            } else {
+                var fromdate = document.getElementById('Search-form-Fromdate').value.trim();
+                var todate = document.getElementById('Search-form-Todate').value.trim();
+                var username = document.getElementById('username').value.trim();
+                var mobileno = document.getElementById('Search-form-mobile').value.trim();
+                if (mobileno == "") {
+                    mobileno = "black";
+                }
+                $("#loader").show();
+                $.ajax({
+                    url: "export_to_csv",
+                    type: "POST",
+                    data: '{fromdate: "' + fromdate + '",todate: "' + todate + '",username: "' + username + '",mobileno: "' + mobileno + '" }',
+
+                    traditional: true,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        if (data == "") {
+                            $('#download').html("No Data Found !!");
+                            $('#success').hide();
+                            $("#loader").hide();
+                        }
+                        else if (data == "timeout") {
+                            $("#loader").hide();
+                            window.location.href = "Account/logincarnival";
+                            $("error").html("Session Timeout ! Please Login Again.");
+                        }
+                        else {
+                            $('#download').html("Download will start automatically. If it does not start,  <a id=\"dlrdownloadlink\" href=\"" + data + "\">click here</a> to download Reports.");
+                            $('#success').hide();
+                            $("#loader").hide();
+                        }
+
+
+                    },
+                    error: function () {
+                        $('#download').html("Error In Export Report !Please Try again later");
+                        $('#success').hide();
+                        $("#loader").hide();
+                    }
+                });
+            }
+        });
+
+    </script>
+</body>
+
+</html>

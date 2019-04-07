@@ -1,0 +1,188 @@
+﻿@*@model List<pullsms_reports.Models.reportPullSms>*@
+@{
+    ViewBag.Title = "PullSmsReport";
+    Layout = "~/Views/_LayoutMaster.cshtml";
+}
+
+
+@*<section id="page-title">
+
+        <div class="container clearfix">
+            <h1>Tables</h1>
+            <ol class="breadcrumb">
+                <li><a href="#">Home</a></li>
+        <li><a href="#">Shortcodes</a></li>
+        <li class="active">Tables</li>
+            </ol>
+        </div>
+
+    </section>*@<!-- #page-title end -->
+<!-- Content
+        ============================================= -->
+<section id="content">
+    <div class="col-md-offset-1">
+        <label class="" style="color:green;" id="success">@TempData["success"]</label>
+        <label class="" style="color:red;" id="error">@TempData["error"]</label>
+        <label class="" style="color:blue;" id="download"></label>
+    </div>
+
+
+    <div class="container clearfix">
+        <!-- Post Content
+        =============================================  "pullSmsReport", "Report", FormMethod.Post,-->
+        <div class="row col-md-offset-1">
+
+            @using (Html.BeginForm(new { @class = "nobottommargin" }))
+            {
+                @*<form id="Seach-form" name="Seach-form" class="nobottommargin" action="Carnival" method="post">*@
+                @*<div class="col-md-offset-0 col-md-2">
+                        <label for="Search-form-Fromdate">From Date:</label>
+                        <input type="text" id="Search-form-Fromdate" name="Search-form-Fromdate" value="@TempData["fromdate"]" onchange=""
+                               onkeypress="return false;" onfocus="clearcontent()" class="form-control not-dark" />
+                    </div>*@
+                @*<div class="col-md-2">
+                        <label for="Search-form-Todate">To Date:</label>
+                        <input type="text" id="Search-form-Todate" name="Search-form-Todate" value="@TempData["todate"]" onchange=""
+                               onkeypress="return false;" onfocus="clearcontent0()" class="form-control not-dark" />
+                    </div>*@
+                <div class="col-md-2">
+                    <label for="Search-form-Source">Source:</label>
+                    @*<input type="text" id="Search-form-mobile" name="Search-form-mobile" value="" class="form-control not-dark" />*@
+                    @*@Html.DropDownList("source", new SelectList(ViewBag.source, "Value", "Text"), "select all", new { @class = "form-control not-dark" })*@
+                    @Html.DropDownList("source", new SelectList(ViewBag.source, "Value", "Text"), "Select Source", new { @class = "form-control not-dark" })
+
+                </div>
+                <div class="col-md-2">
+                    <label for="Search-form-pkey">P Key:</label>
+                    @Html.DropDownList("pkey", new SelectList(string.Empty, "Value", "Text"), new { @class = "form-control not-dark" })
+                    @*<input type="text" id="Search-form-Todate" name="Search-form-Todate" value="@TempData["todate"]" onchange=""
+                        onkeypress="return false;" onfocus="clearcontent0()" class="form-control not-dark" />*@
+                </div>
+                <div class="col-md-2">
+                    <label for="Search-form-skey">s Key:</label>
+                    @Html.DropDownList("skey", new SelectList(string.Empty, "Value", "Text"), new { @class = "form-control not-dark" })
+                    @*<input type="text" id="Search-form-Todate" name="Search-form-Todate" value="@TempData["todate"]" onchange=""
+                        onkeypress="return false;" onfocus="clearcontent0()" class="form-control not-dark" />*@
+                </div>
+                @*<div class="col-md-2">
+                        <label for="Search-form-mobile">Mobile No:</label>
+                        <input type="text" id="Search-form-mobile" name="Search-form-mobile" value="@TempData["mobileno"]" onkeypress="return isNumberKey(event)" class="form-control not-dark" />
+                    </div>*@
+                <div class="col-md-4" style="margin-top:20px;">
+                    <button class="btn btn-primary" id="Seach-form-submit" name="Seach-form-submit" style="margin-top:10px; background-color:black;" value="Search">Search</button> @*button button-3d button-black nomargin fright*@
+
+                    <button id="Search-datewise" type="button" style="margin-top:10px; background-color:black;"
+                            class="btn btn-primary"  value="Searchdateise">
+                        Search Datewise
+                    </button>
+                </div>
+            }
+            @*</form>*@
+            @*<div class="col-md-2" style="margin-top:20px;">
+                    <button class="btn btn-primary" id="search-form-download" value="Export" style="margin-top:10px; background-color:black;">Export</button>
+                </div>*@
+        </div>
+        <hr />
+        <div id="tbl_data" style="display:none" class="">
+
+            @*@if (Model != null) //NUll check for Model
+            {
+                if (Model.Count > 0)
+                {*@
+                    <table id="idtable_d" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Secondary key</th>
+                                <th>Mobile Number</th>
+                                <th>Message</th>
+                                <th>Date Time</th>
+                                <th>Origin</th>
+                                <th>Source</th>
+                                @*<th>Delivery Date</th>
+                                    <th>Sender Id</th>*@
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @*@foreach (var item in Model)
+                        {
+                        <tr>
+                            <td>@item.MsgID</td>
+                            <td>@item.SKey</td>
+                            <td>@item.MobileNo</td>
+                            <td>@item.Message</td>
+                            <td>@item.RecDateTime</td>
+                            <td>@item.Circle</td>
+                            <td>@item.Source</td>
+                        </tr>
+                        }*@
+
+                        </tbody>
+                    </table>
+              @*}
+            }*@
+
+
+        </div>
+
+    </div>
+
+
+    <div class="modal fade" tabindex="-1" id="search-datewise-model"
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        ×
+                    </button>
+                    <h4 class="modal-title">Search Option</h4>
+                </div>
+                <div class="modal-body">
+                    @*<form>*@
+
+                    @*@using (Html.BeginForm("getdatadatewise", "Report", FormMethod.Post))
+{*@
+                            @*<input id="hfjson" name="hfjson" type="hidden" />*@
+                        <div class="form-group">
+                            <input type="radio" id="rdn-getdatewise" name="rdn-getreport" value="rpt-datewise" checked> Specific Period
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="lblsearch-datewise-fromdate">From Date:</label>
+                                    @*<input class="form-control" type="text"
+                                        placeholder="Login Username" id="inputUserName" />*@
+                                    <input type="text" id="SearchSummary-form-Fromdate" name="SearchSummary-form-Fromdate" value="@TempData["fromdate"]" onchange=""
+                                           onkeypress="return false;" onfocus="clearcontentsummary()" autocomplete="off"  class="form-control not-dark" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="lblsearch-datewise-todate">To Date:</label>
+                                    <input type="text" id="SearchSummary-form-Todate" name="SearchSummary-form-Todate" value="@TempData["todate"]" onchange=""
+                                           onkeypress="return false;" onfocus="clearcontent0summary()" autocomplete="off" class="form-control not-dark" />
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="form-group">
+                            <input type="radio" id="rdn-getallreport" name="rdn-getreport" value="rpt-all"> Get All Reports
+                            @*<input class="form-control" placeholder="Login Password"
+                                type="password" id="inputPassword" />*@
+                        </div>
+                        
+                    @*}*@
+
+                    @*</form> onclick="return validatedatetime()"*@
+                </div>
+                <div class="modal-footer"> 
+
+                    <button type="submit" id="search-datewise-go" class="btn btn-primary" style="background-color:black;">Go</button>
+                    <button type="button" id="hide-model" class="btn btn-primary" style="background-color:black;">
+                        Hide
+                    </button>
+    </div>
+            </div>
+        </div>
+    </div>
+
+</section>

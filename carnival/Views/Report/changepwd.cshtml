@@ -1,0 +1,51 @@
+﻿@model pullsms_reports.Models.cngpwd
+@{
+    ViewBag.Title = "changepwd";
+    Layout = "~/Views/_LayoutMaster.cshtml";
+}
+
+<section id="content">
+    <div class="col-md-offset-2">
+        <label class="" style="color:green;" id="success">@TempData["success"]</label>
+        <label class="" style="color:red;" id="error">@TempData["error"]</label>
+        @*<label class="" style="color:blue;" id="download"></label>*@
+    </div>
+    <div class="container clearfix">
+        <!-- Post Content
+        ============================================= -->
+        <div class="row col-md-offset-3">
+                @using (Html.BeginForm(new { @class = "nobottommargin" }))
+                { 
+                  
+                     <div class="col-md-offset-1 col-md-2">
+                    <label for="SearchSummary-form-Fromdate">Old Password:</label>
+                         <input type="text" id="old-password" name="old-password"  class="form-control not-dark" />
+                         </div>
+                    <div class="col-md-2">
+                    <label for="SearchSummary-form-Todate">New Password:</label>
+                        <input type="text" id="new-password" name="new-password" class="form-control not-dark" />
+                        @*@Html.EditorFor(Model => Model.newpwd, new { @class = "form-control not-dark" })
+                        @Html.ValidationMessageFor(Model => Model.newpwd, "", new { @class = "text-danger" })*@
+                </div>
+                     <div class="col-md-2">
+                    <label for="Search-form-From">Confirm Password:</label>
+                    @*<input type="text" id="Search-form-mobile" name="Search-form-mobile" value="@TempData["todate"]"   @TempData["todate"] value="" class="form-control not-dark" /> onkeypress="return false;" onfocus="clearcontentsummary()"*@
+                         <input type="password" id="confirm-password" name="confirm-password"
+                                class="form-control not-dark" />
+                         @*@Html.EditorFor(Model => Model.confirtpwd, new { @class = "form-control not-dark" })
+                         @Html.ValidationMessageFor(Model => Model.confirtpwd, "", new { @class="text-danger"})*@
+                </div>
+                    <div class="col-md-2" style="margin-top:20px;">
+                        <button class="btn btn-primary" id="form-save" name="form-save" style="margin-top:10px; background-color:black;" value="Save">
+                            Save
+                        </button>
+                    <button class="btn btn-primary" id="form-clear" name="form-clear" style="margin-top:10px; background-color:black;"
+                                 value="Clear">
+                            Clear
+                        </button>
+                         @*button button-3d button-black nomargin fright*@
+                </div>
+                }
+            </div>
+        </div>
+</section>
